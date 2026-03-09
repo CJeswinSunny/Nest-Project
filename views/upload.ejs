@@ -1,0 +1,70 @@
+<%- include('partials/header') %>
+
+    <section class="upload-section">
+        <div class="container">
+            <div class="upload-container">
+                <div class="upload-header">
+                    <h1>Upload Note</h1>
+                    <p>Share your study materials and help fellow students succeed</p>
+                </div>
+                <form action="/notes/upload" method="POST" enctype="multipart/form-data" class="upload-form">
+                    <div class="form-group">
+                        <label for="title">Note Title <span class="required">*</span></label>
+                        <input type="text" id="title" name="title" placeholder="e.g. Linear Algebra Chapter 3 Notes"
+                            required maxlength="200">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="subject">Subject <span class="required">*</span></label>
+                        <select id="subject" name="subject" required>
+                            <option value="">Select a subject</option>
+                            <% subjects.forEach(function(sub) { %>
+                                <option value="<%= sub %>">
+                                    <%= sub %>
+                                </option>
+                                <% }); %>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="description">Description</label>
+                        <textarea id="description" name="description" rows="4"
+                            placeholder="Briefly describe what these notes cover..." maxlength="1000"></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label>File <span class="required">*</span></label>
+                        <div class="file-upload-area" id="fileUploadArea">
+                            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="1.5">
+                                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                                <polyline points="17 8 12 3 7 8" />
+                                <line x1="12" y1="3" x2="12" y2="15" />
+                            </svg>
+                            <p class="file-upload-text">Drag & drop your file here, or <span
+                                    class="file-browse">browse</span></p>
+                            <p class="file-upload-hint">PDF, DOC, DOCX, PPT, PPTX, TXT, JPG, PNG (max 25MB)</p>
+                            <input type="file" id="file" name="file" required
+                                accept=".pdf,.doc,.docx,.ppt,.pptx,.txt,.jpg,.jpeg,.png,.webp">
+                            <div class="file-preview" id="filePreview" style="display:none;">
+                                <span class="file-preview-name" id="fileName"></span>
+                                <span class="file-preview-size" id="fileSize"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary btn-full btn-lg">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                            <polyline points="17 8 12 3 7 8" />
+                            <line x1="12" y1="3" x2="12" y2="15" />
+                        </svg>
+                        Upload Note
+                    </button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <%- include('partials/footer') %>

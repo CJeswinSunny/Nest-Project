@@ -1,0 +1,144 @@
+<%- include('partials/header') %>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-bg-shapes">
+            <div class="shape shape-1"></div>
+            <div class="shape shape-2"></div>
+            <div class="shape shape-3"></div>
+        </div>
+        <div class="container">
+            <div class="hero-content">
+                <h1 class="hero-title">Share Notes,<br><span class="gradient-text">Ace Together</span></h1>
+                <p class="hero-subtitle">The platform where students share study notes, collaborate, and succeed. Upload
+                    your notes and help others learn.</p>
+                <div class="hero-stats">
+                    <div class="stat-item">
+                        <span class="stat-number">
+                            <%= stats.totalNotes %>
+                        </span>
+                        <span class="stat-label">Notes Shared</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number">
+                            <%= stats.totalUsers %>
+                        </span>
+                        <span class="stat-label">Students</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number">
+                            <%= stats.totalDownloads %>
+                        </span>
+                        <span class="stat-label">Downloads</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Search & Filter Section -->
+    <section class="search-section">
+        <div class="container">
+            <form class="search-form" action="/" method="GET">
+                <div class="search-bar">
+                    <svg class="search-icon" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2">
+                        <circle cx="11" cy="11" r="8" />
+                        <path d="M21 21l-4.35-4.35" />
+                    </svg>
+                    <input type="text" name="search" placeholder="Search notes by title or description..."
+                        value="<%= currentSearch %>" class="search-input" id="searchInput">
+                    <button type="submit" class="btn btn-primary">Search</button>
+                </div>
+                <div class="filter-row">
+                    <div class="filter-chips">
+                        <a href="/?search=<%= currentSearch %>&subject=All&sort=<%= currentSort %>"
+                            class="chip <%= currentSubject === 'All' ? 'active' : '' %>">All</a>
+                        <% subjects.forEach(function(sub) { %>
+                            <a href="/?search=<%= currentSearch %>&subject=<%= sub %>&sort=<%= currentSort %>"
+                                class="chip <%= currentSubject === sub ? 'active' : '' %>">
+                                <%= sub %>
+                            </a>
+                            <% }); %>
+                    </div>
+                    <div class="sort-select">
+                        <select name="sort" onchange="this.form.submit()" id="sortSelect">
+                            <option value="newest" <%=currentSort==='newest' ? 'selected' : '' %>>Newest First</option>
+                            <option value="oldest" <%=currentSort==='oldest' ? 'selected' : '' %>>Oldest First</option>
+                            <option value="popular" <%=currentSort==='popular' ? 'selected' : '' %>>Most Popular
+                            </option>
+                        </select>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </section>
+
+    <!-- Notes Grid -->
+    <section class="notes-section">
+        <div class="container">
+            <% if (notes.length===0) { %>
+                <div class="empty-state">
+                    <div class="empty-icon">📚</div>
+                    <h2>No notes found</h2>
+                    <p>Be the first to share your study notes!</p>
+                    <% if (currentUser) { %>
+                        <a href="/notes/upload" class="btn btn-primary">Upload Notes</a>
+                        <% } else { %>
+                            <a href="/register" class="btn btn-primary">Join NoteShare</a>
+                            <% } %>
+                </div>
+                <% } else { %>
+                    <div class="notes-grid">
+                        <% notes.forEach(function(note) { %>
+                            <a href="/notes/<%= note.id %>" class="note-card">
+                                <div class="note-card-header">
+                                    <span class="note-subject-badge">
+                                        <%= note.subject %>
+                                    </span>
+                                    <span class="note-file-type">
+                                        <%= note.original_name.split('.').pop().toUpperCase() %>
+                                    </span>
+                                </div>
+                                <h3 class="note-title">
+                                    <%= note.title %>
+                                </h3>
+                                <% if (note.description) { %>
+                                    <p class="note-desc">
+                                        <%= note.description.substring(0, 120) %>
+                                            <%= note.description.length> 120 ? '...' : '' %>
+                                    </p>
+                                    <% } %>
+                                        <div class="note-meta">
+                                            <div class="note-author">
+                                                <div class="avatar-sm"
+                                                    style="background-color: <%= note.avatar_color %>">
+                                                    <%= note.username.charAt(0).toUpperCase() %>
+                                                </div>
+                                                <span>
+                                                    <%= note.username %>
+                                                </span>
+                                            </div>
+                                            <div class="note-stats-row">
+                                                <span class="note-stat">
+                                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none"
+                                                        stroke="currentColor" stroke-width="2">
+                                                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                                                        <polyline points="7 10 12 15 17 10" />
+                                                        <line x1="12" y1="15" x2="12" y2="3" />
+                                                    </svg>
+                                                    <%= note.download_count %>
+                                                </span>
+                                                <span class="note-stat">
+                                                    <%= (note.file_size / 1024).toFixed(0) %> KB
+                                                </span>
+                                            </div>
+                                        </div>
+                            </a>
+                            <% }); %>
+                    </div>
+                    <% } %>
+        </div>
+    </section>
+
+    <%- include('partials/footer') %>

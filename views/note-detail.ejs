@@ -1,0 +1,165 @@
+<%- include('partials/header') %>
+
+    <section class="detail-section" style="padding: 60px 0;">
+        <div class="container">
+            <div class="detail-grid" style="display: grid; grid-template-columns: 2fr 1fr; gap: 30px;">
+                <!-- Main Content -->
+                <div class="detail-main"
+                    style="background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 16px; padding: 40px;">
+                    <div class="note-header" style="margin-bottom: 25px;">
+                        <div style="display: flex; gap: 10px; margin-bottom: 15px;">
+                            <span class="note-subject-badge">
+                                <%= note.subject %>
+                            </span>
+                            <span
+                                style="background: rgba(255,255,255,0.1); padding: 4px 10px; border-radius: 6px; font-size: 0.8rem; font-weight: 600;">
+                                <%= note.original_name.split('.').pop().toUpperCase() %>
+                            </span>
+                        </div>
+                        <h1 style="font-size: 2.5rem; margin-bottom: 15px;">
+                            <%= note.title %>
+                        </h1>
+                        <div
+                            style="display: flex; gap: 20px; color: var(--text-muted); font-size: 0.95rem; border-bottom: 1px solid var(--border-color); padding-bottom: 20px;">
+                            <div style="display: flex; align-items: center; gap: 8px;">
+                                <div class="avatar-sm"
+                                    style="background-color: <%= note.avatar_color %>; width: 30px; height: 30px; font-size: 1rem;">
+                                    <%= note.username.charAt(0).toUpperCase() %>
+                                </div>
+                                <span>Uploaded by <strong>
+                                        <%= note.username %>
+                                    </strong></span>
+                            </div>
+                            <div style="display: flex; align-items: center; gap: 5px;">
+                                📅 <%= new Date(note.created_at).toLocaleDateString() %>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="note-description"
+                        style="margin-bottom: 40px; line-height: 1.8; font-size: 1.1rem; color: #cbd5e1;">
+                        <% if (note.description) { %>
+                            <h3 style="margin-bottom: 15px; color: white;">Description</h3>
+                            <p style="white-space: pre-wrap;">
+                                <%= note.description %>
+                            </p>
+                            <% } else { %>
+                                <p style="font-style: italic; color: var(--text-muted);">No description provided for
+                                    this note.</p>
+                                <% } %>
+                    </div>
+
+                    <!-- Preview Area (if image) -->
+                    <% const ext=note.filename.split('.').pop().toLowerCase(); if(['jpg', 'jpeg' , 'png' , 'webp'
+                        , 'gif' ].includes(ext)) { %>
+                        <div class="note-preview"
+                            style="margin-bottom: 30px; border-radius: 12px; overflow: hidden; border: 1px solid var(--border-color);">
+                            <img src="/uploads/<%= note.filename %>" alt="<%= note.title %> preview"
+                                style="width: 100%; height: auto; display: block;" />
+                        </div>
+                        <% } %>
+
+                            <div class="download-action"
+                                style="text-align: center; padding: 30px; background: rgba(0,0,0,0.2); border-radius: 12px; border: 1px dashed var(--primary);">
+                                <h3 style="margin-bottom: 10px;">Ready to learn?</h3>
+                                <p style="color: var(--text-muted); margin-bottom: 20px;">Download this file to your
+                                    device to view the complete contents.</p>
+                                <a href="/notes/<%= note.id %>/download" class="btn btn-primary btn-lg"
+                                    style="padding: 15px 40px; font-size: 1.2rem; box-shadow: 0 10px 25px rgba(99, 102, 241, 0.4);">
+                                    ⬇️ Download Note (<%= (note.file_size / 1024).toFixed(0) %> KB)
+                                </a>
+                            </div>
+                </div>
+
+                <!-- Sidebar -->
+                <div class="detail-sidebar" style="display: flex; flex-direction: column; gap: 30px;">
+                    <!-- File Stats -->
+                    <div class="sidebar-widget"
+                        style="background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 16px; padding: 25px;">
+                        <h3
+                            style="margin-bottom: 20px; border-bottom: 1px solid var(--border-color); padding-bottom: 10px;">
+                            File Information</h3>
+                        <ul
+                            style="list-style: none; padding: 0; margin: 0; color: var(--text-muted); display: flex; flex-direction: column; gap: 15px;">
+                            <li style="display: flex; justify-content: space-between;">
+                                <span>Original Name:</span>
+                                <span
+                                    style="color: white; max-width: 150px; text-overflow: ellipsis; overflow: hidden; white-space: nowrap;"
+                                    title="<%= note.original_name %>">
+                                    <%= note.original_name %>
+                                </span>
+                            </li>
+                            <li style="display: flex; justify-content: space-between;">
+                                <span>Size:</span>
+                                <span style="color: white;">
+                                    <%= (note.file_size / 1024).toFixed(2) %> KB
+                                </span>
+                            </li>
+                            <li style="display: flex; justify-content: space-between;">
+                                <span>Downloads:</span>
+                                <span style="color: white; font-weight: bold;">
+                                    <%= note.download_count %>
+                                </span>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <!-- Related Notes -->
+                    <% if (relatedNotes && relatedNotes.length> 0) { %>
+                        <div class="sidebar-widget"
+                            style="background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 16px; padding: 25px;">
+                            <h3
+                                style="margin-bottom: 20px; border-bottom: 1px solid var(--border-color); padding-bottom: 10px;">
+                                Related Notes</h3>
+                            <div style="display: flex; flex-direction: column; gap: 15px;">
+                                <% relatedNotes.forEach(function(relNote) { %>
+                                    <a href="/notes/<%= relNote.id %>"
+                                        style="display: block; padding: 15px; background: rgba(255,255,255,0.03); border-radius: 8px; border: 1px solid transparent; transition: all 0.2s;">
+                                        <h4 style="margin-bottom: 5px; color: white; font-size: 1.05rem;">
+                                            <%= relNote.title %>
+                                        </h4>
+                                        <div
+                                            style="display: flex; justify-content: space-between; font-size: 0.85rem; color: var(--text-muted);">
+                                            <span>
+                                                <%= relNote.username %>
+                                            </span>
+                                            <span>⬇️ <%= relNote.download_count %></span>
+                                        </div>
+                                    </a>
+                                    <% }); %>
+                            </div>
+                        </div>
+                        <% } %>
+
+                            <!-- More from User -->
+                            <% if (moreFromUser && moreFromUser.length> 0) { %>
+                                <div class="sidebar-widget"
+                                    style="background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 16px; padding: 25px;">
+                                    <h3
+                                        style="margin-bottom: 20px; border-bottom: 1px solid var(--border-color); padding-bottom: 10px;">
+                                        More from <%= note.username %>
+                                    </h3>
+                                    <div style="display: flex; flex-direction: column; gap: 15px;">
+                                        <% moreFromUser.forEach(function(userNote) { %>
+                                            <a href="/notes/<%= userNote.id %>"
+                                                style="display: block; color: var(--primary); hover: text-decoration: underline;">
+                                                <%= userNote.title %>
+                                            </a>
+                                            <% }); %>
+                                    </div>
+                                </div>
+                                <% } %>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <style>
+        @media (max-width: 900px) {
+            .detail-grid {
+                grid-template-columns: 1fr !important;
+            }
+        }
+    </style>
+
+    <%- include('partials/footer') %>
