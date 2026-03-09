@@ -4,3 +4,4 @@ sessions.db
 uploads/
 db/*.db
 .DS_Store
+*.pem

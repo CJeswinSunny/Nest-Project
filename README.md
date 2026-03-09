@@ -14,3 +14,10 @@ A full-stack Node.js platform where students can seamlessly upload, search for, 
 npm install
 npm run dev
 ```
+
+## Docker Options
+You can also run this using Docker:
+```bash
+docker build -t noteshare:latest .
+docker run -p 3000:3000 -d noteshare:latest
+```
